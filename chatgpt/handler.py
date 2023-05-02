@@ -26,8 +26,8 @@ def handle(req):
         conversationLog = []
         count = 0
         for msg in messages[::-1]:
-            # Only get the last 10 messages
-            if count == 10:
+            # Only get the last 20 messages
+            if count == 20:
                 break
             if str(msg["author_id"]) == str(user_id):
                 conversationLog.append({"role": "user", "content": msg["content"]})

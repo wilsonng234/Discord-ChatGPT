@@ -1,15 +1,17 @@
 import discord
 import requests
+import openai
 
 from dotenv import dotenv_values
 
-config = dotenv_values(".env")
+config = dotenv_values()
 
 intents = discord.Intents.default()
 intents.messages = True
 intents.message_content = True
 
 client = discord.Client(intents=intents)
+
 
 @client.event
 async def on_message(message):
@@ -24,5 +26,6 @@ async def on_message(message):
             await message.channel.send(content)
         else:
             await message.channel.send("Something went wrong. Please try again later.")
+
 
 client.run(config["DISCORD_BOT_TOKEN"])

@@ -8,6 +8,7 @@
 
 ```
 API_URL=http://localhost:8080/function
+DISCORD_BOT_ID={your discord bot id}
 DISCORD_BOT_TOKEN={your discord bot token}
 ```
 

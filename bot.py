@@ -6,6 +6,7 @@ from dotenv import dotenv_values
 
 config = dotenv_values()
 api_url = config.get("API_URL") + "/chatgpt"
+discord_bot_id = config["DISCORD_BOT_ID"]
 discord_bot_token = config["DISCORD_BOT_TOKEN"]
 
 intents = discord.Intents.default()
@@ -17,7 +18,7 @@ client = discord.Client(intents=intents)
 
 async def fetch_messages(message, n):
     return [
-        {"author": msg.author.id, "content": msg.content}
+        {"author_id": msg.author.id, "content": msg.content}
         async for msg in message.channel.history(limit=n)
     ]
 
@@ -33,7 +34,8 @@ async def on_message(message):
     messages.reverse()
     data = json.dumps(
         {
-            "author": message.author.id,
+            "user_id": message.author.id,
+            "chatgpt_bot_id": discord_bot_id,
             "messages": messages,
         }
     )
@@ -41,7 +43,6 @@ async def on_message(message):
     headers = {"Content-Type": "application/json"}
     response = requests.post(api_url, data=data, headers=headers)
     content = response.content.decode("utf-8")
-
     if content:
         await message.channel.send(content)
     else:

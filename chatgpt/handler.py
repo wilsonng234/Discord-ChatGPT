@@ -18,19 +18,25 @@ def handle(req):
     dict = None
 
     try:
-        req = json.loads(req)
-        author = req["author"]
+        req = json.loads(req)   
+        user_id = req["user_id"]    
+        chatgpt_bot_id = req["chatgpt_bot_id"]
         messages = req["messages"]
-        # Only get the last 10 messages
-        conversationLog = list(
-            filter(lambda message: message["author"] == author, messages)
-        )[-10:]
-        conversationLog = list(
-            map(
-                lambda message: {"role": "user", "content": message["content"]},
-                conversationLog,
-            )
-        )
+
+        conversationLog = []
+        count = 0
+        for msg in messages[::-1]:
+            # Only get the last 10 messages
+            if count == 10:
+                break
+            if str(msg["author_id"]) == str(user_id):
+                conversationLog.append({"role": "user", "content": msg["content"]})
+                count += 1
+            if str(msg["author_id"]) == str(chatgpt_bot_id):
+                conversationLog.append({"role": "assistant", "content": msg["content"]})
+                count += 1
+
+        conversationLog.reverse()
 
         data = json.dumps(
             {
@@ -38,7 +44,6 @@ def handle(req):
                 "messages": conversationLog,
             }
         )
-
         headers = {
             "Content-Type": "application/json",
             "Authorization": f"Bearer {api_key}",

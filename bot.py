@@ -4,6 +4,7 @@ import requests
 from dotenv import dotenv_values
 
 config = dotenv_values()
+api_url = config.get("API_URL") + "/chatgpt"
 
 intents = discord.Intents.default()
 intents.messages = True
@@ -19,9 +20,7 @@ async def on_message(message):
     
     await message.channel.typing()
 
-    api_url = config.get("API_URL") + "/chatgpt"
     headers = {"Content-Type": "text/plain"}
-
     response = requests.post(api_url, data=message.content, headers=headers)
     content = response.content.decode("utf-8")
 

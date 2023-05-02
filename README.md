@@ -2,6 +2,8 @@
 
 ## Getting started
 
+### Set up dotenv
+
 1. Set up .env under root directory
 
 ```

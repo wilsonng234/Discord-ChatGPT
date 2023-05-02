@@ -2,6 +2,26 @@
 
 ## Getting started
 
+1. Set up .env under root directory
+
+```
+API_URL=http://localhost:8080/function
+DISCORD_BOT_TOKEN={your discord bot token}
+```
+
+2. Set up .env under chatgpt directory
+
+```
+OPENAI_API_KEY={your openai api key}
+```
+
+### Set up Discord Bot
+
+1. Create your ChatGPT bot in https://discord.com/developers/applications
+2. Check `MESSAGE CONTENT INTENT` under bot setting
+3. Generate bot invitation url under OAuth2 setting
+4. Invite bot the your channel
+
 ### Deploy OpenFaaS to local Kubernetes
 
 Follow this [tutorial](https://docs.openfaas.com/deployment/kubernetes/):
@@ -33,7 +53,7 @@ Follow this [tutorial](https://docs.openfaas.com/deployment/kubernetes/):
 # Login Docker
 10. docker login --username {docker user name}
 11. faas-cli push stack.yml
- 
+
 # Deploy
 12. faas-cli deploy stack.yml
 ```

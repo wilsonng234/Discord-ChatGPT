@@ -15,6 +15,13 @@ DISCORD_BOT_TOKEN={your discord bot token}
 OPENAI_API_KEY={your openai api key}
 ```
 
+### Set up Discord Bot
+
+1. Create your ChatGPT bot in https://discord.com/developers/applications
+2. Check `MESSAGE CONTENT INTENT` under bot setting
+3. Generate bot invitation url under OAuth2 setting
+4. Invite bot the your channel
+
 ### Deploy OpenFaaS to local Kubernetes
 
 Follow this [tutorial](https://docs.openfaas.com/deployment/kubernetes/):

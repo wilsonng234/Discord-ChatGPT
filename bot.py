@@ -1,6 +1,5 @@
 import discord
 import requests
-import openai
 
 from dotenv import dotenv_values
 

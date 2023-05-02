@@ -14,19 +14,21 @@ client = discord.Client(intents=intents)
 
 @client.event
 async def on_message(message):
-    if message.author != client.user:
-        await message.channel.typing()
+    if message.author.bot:
+        return
+    
+    await message.channel.typing()
 
-        api_url = config.get("API_URL") + "/chatgpt"
-        headers = {"Content-Type": "text/plain"}
+    api_url = config.get("API_URL") + "/chatgpt"
+    headers = {"Content-Type": "text/plain"}
 
-        response = requests.post(api_url, data=message.content, headers=headers)
-        content = response.content.decode("utf-8")
+    response = requests.post(api_url, data=message.content, headers=headers)
+    content = response.content.decode("utf-8")
 
-        if content:
-            await message.channel.send(content)
-        else:
-            await message.channel.send("Something went wrong. Please try again later.")
+    if content:
+        await message.channel.send(content)
+    else:
+        await message.channel.send("Something went wrong. Please try again later.")
 
 
 client.run(config["DISCORD_BOT_TOKEN"])

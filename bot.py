@@ -15,6 +15,8 @@ client = discord.Client(intents=intents)
 @client.event
 async def on_message(message):
     if message.author != client.user:
+        await message.channel.typing()
+
         api_url = config.get("API_URL") + "/chatgpt"
         headers = {"Content-Type": "text/plain"}
 

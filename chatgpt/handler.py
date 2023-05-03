@@ -1,5 +1,5 @@
 import json
-import requests
+import openai
 
 from dotenv import dotenv_values
 
@@ -13,10 +13,6 @@ def handle(req):
     Args:
         req (str): request body
     """
-    response = None
-    content = None
-    dict = None
-
     try:
         req = json.loads(req)
         user_id = req["user_id"]
@@ -45,30 +41,12 @@ def handle(req):
 
         conversationLog.reverse()
 
-        data = json.dumps(
-            {
-                "model": "gpt-3.5-turbo",
-                "messages": conversationLog,
-            }
+        openai.api_key = openai_api_key
+        completion = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=conversationLog,
         )
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {openai_api_key}",
-        }
 
-        response = requests.post(api_url, data=data, headers=headers)
-        content = response.content.decode("utf-8")
-        dict = json.loads(content)
-
-        return dict["choices"][0]["message"]["content"]
-    except json.JSONDecodeError:
-        try:
-            content = content.removeprefix("OpenAI API responded:")
-            dict = json.loads(content)
-        except Exception:
-            return "Something went wrong. Please try again later."
-
-        if dict["error"] and dict["error"]["message"]:
-            return dict["error"]["message"]
-        else:
-            return "Something went wrong. Please try again later."
+        return completion.choices[0].message.content
+    except Exception as e:
+        return e

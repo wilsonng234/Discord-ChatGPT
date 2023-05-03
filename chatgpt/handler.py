@@ -1,23 +1,26 @@
 import json
 import openai
 
-from dotenv import dotenv_values
 
-config = dotenv_values()
-api_url = "https://chatgpt-api.shn.hk/v1"
-openai_api_key = config["OPENAI_API_KEY"]
+def remove_prefix(text, prefix):
+    if text.startswith(prefix):
+        return text[len(prefix) :]
+    return text
 
 
-def handle(req):
-    """handle a request to the function
-    Args:
-        req (str): request body
-    """
+def handle(event, context):
     try:
-        req = json.loads(req)
-        user_id = req["user_id"]
-        chatgpt_bot_id = req["chatgpt_bot_id"]
-        messages = req["messages"]
+        body = json.loads(event.body)
+        user_id, chatgpt_bot_id, messages = (
+            body.get("user_id"),
+            body.get("chatgpt_bot_id"),
+            body.get("messages"),
+        )
+        authorization = event.headers.get("Authorization")
+
+        openai.api_key = (
+            remove_prefix(authorization, "Bearer ") if authorization else ""
+        )
 
         conversationLog = []
         count = 0
@@ -26,27 +29,40 @@ def handle(req):
             if count == 20:
                 break
 
-            if str(msg["author_id"]) == str(chatgpt_bot_id):
-                conversationLog.append({"role": "assistant", "content": msg["content"]})
+            author_id = msg.get("author_id")
+            content = msg.get("content")
+
+            if str(author_id) == str(chatgpt_bot_id):
+                conversationLog.append({"role": "assistant", "content": content})
                 count += 1
 
-            elif not msg["content"].startswith("!chat"):
+            elif not content.startswith("!chat"):
                 pass
 
-            elif str(msg["author_id"]) == str(user_id):
+            elif str(author_id) == str(user_id):
                 conversationLog.append(
-                    {"role": "user", "content": msg["content"].removeprefix("!chat")}
+                    {"role": "user", "content": remove_prefix(content, "!chat").strip()}
                 )
                 count += 1
-
         conversationLog.reverse()
 
-        openai.api_key = openai_api_key
         completion = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=conversationLog,
         )
 
-        return completion.choices[0].message.content
+        return {
+            "statusCode": 200,
+            "body": {
+                "response": completion.choices[0].message.content,
+            },
+            "headers": {"Content-Type": "application/json"},
+        }
     except Exception as e:
-        return e
+        return {
+            "statusCode": 500,
+            "body": {
+                "error": str(e),
+            },
+            "headers": {"Content-Type": "application/json"},
+        }

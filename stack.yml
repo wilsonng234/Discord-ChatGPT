@@ -1,10 +1,9 @@
 version: 1.0
 provider:
-  name: openfaas
-  gateway: http://127.0.0.1:8080
+    name: openfaas
+    gateway: http://127.0.0.1:8080
 functions:
-  chatgpt:
-    lang: python3
-    handler: ./chatgpt
-    image: wilsonng234/chatgpt:latest
-
+    chatgpt:
+        lang: python3-http
+        handler: ./chatgpt
+        image: wilsonng234/chatgpt:latest

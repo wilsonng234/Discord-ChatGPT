@@ -49,8 +49,12 @@ async def handle_chatgpt(message):
     }
     response = requests.post(api_url, data=data, headers=headers)
     content = response.content.decode("utf-8")
-    if content:
-        await message.channel.send(content)
+    content = json.loads(content)
+
+    if content.get("response") is not None:
+        await message.channel.send(content.get("response"))
+    elif content.get("error") is not None:
+        await message.channel.send("error: " + content.get("error"))
     else:
         await message.channel.send("Something went wrong. Please try again later.")
 

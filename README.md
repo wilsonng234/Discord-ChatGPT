@@ -4,17 +4,12 @@
 
 ### Set up dotenv
 
-1. Set up .env under root directory
+Set up .env under root directory
 
 ```
 API_URL=http://localhost:8080/function
 DISCORD_BOT_ID={your discord bot id}
 DISCORD_BOT_TOKEN={your discord bot token}
-```
-
-2. Set up .env under chatgpt directory
-
-```
 OPENAI_API_KEY={your openai api key}
 ```
 

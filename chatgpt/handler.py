@@ -18,8 +18,8 @@ def handle(req):
     dict = None
 
     try:
-        req = json.loads(req)   
-        user_id = req["user_id"]    
+        req = json.loads(req)
+        user_id = req["user_id"]
         chatgpt_bot_id = req["chatgpt_bot_id"]
         messages = req["messages"]
 
@@ -30,9 +30,13 @@ def handle(req):
             if count == 20:
                 break
             if str(msg["author_id"]) == str(user_id):
-                conversationLog.append({"role": "user", "content": msg["content"]})
+                conversationLog.append(
+                    {"role": "user", "content": msg["content"].removeprefix("!chat")}
+                )
                 count += 1
-            if str(msg["author_id"]) == str(chatgpt_bot_id):
+            elif not msg["content"].startswith("!chat"):
+                continue
+            elif str(msg["author_id"]) == str(chatgpt_bot_id):
                 conversationLog.append({"role": "assistant", "content": msg["content"]})
                 count += 1
 

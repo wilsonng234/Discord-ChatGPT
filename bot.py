@@ -16,16 +16,18 @@ intents.message_content = True
 client = discord.Client(intents=intents)
 
 
-async def fetch_messages(message, n):
-    return [
-        {"author_id": msg.author.id, "content": msg.content}
-        async for msg in message.channel.history(limit=n)
-    ]
+async def handle_chatgpt(message):
+    async def fetch_messages(message, n):
+        return [
+            {"author_id": msg.author.id, "content": msg.content}
+            async for msg in message.channel.history(limit=n)
+        ]
 
-
-@client.event
-async def on_message(message):
-    if message.author.bot:
+    if (
+        message.author.bot
+        or not message.type == discord.MessageType.default
+        or not message.content.startswith("!chat")
+    ):
         return
 
     await message.channel.typing()
@@ -47,6 +49,12 @@ async def on_message(message):
         await message.channel.send(content)
     else:
         await message.channel.send("Something went wrong. Please try again later.")
+
+
+@client.event
+async def on_message(message):
+    if message.author != client.user:
+        await handle_chatgpt(message)
 
 
 client.run(discord_bot_token)

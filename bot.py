@@ -54,7 +54,7 @@ async def handle_chatgpt(message):
     if content.get("response") is not None:
         await message.channel.send(content.get("response"))
     elif content.get("error") is not None:
-        await message.channel.send("error: " + content.get("error"))
+        await message.channel.send("Error:\n" + content.get("error"))
     else:
         await message.channel.send("Something went wrong. Please try again later.")
 

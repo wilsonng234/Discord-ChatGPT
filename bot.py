@@ -51,16 +51,20 @@ async def handle_chatgpt(message):
         "Content-Type": "application/json",
         "Authorization": f"Bearer {openai_api_key}",
     }
-    response = requests.post(api_url + "/chatgpt", data=data, headers=headers)
-    content = response.content.decode("utf-8")
-    content = json.loads(content)
 
-    if content.get("response") is not None:
-        await message.channel.send(content.get("response"))
-    elif content.get("error") is not None:
-        await message.channel.send("Error:\n" + content.get("error"))
-    else:
-        await message.channel.send("Something went wrong. Please try again later.")
+    try:
+        response = requests.post(api_url + "/chatgpt", data=data, headers=headers)
+        content = response.content.decode("utf-8")
+        content = json.loads(content)
+
+        if content.get("response") is not None:
+            await message.channel.send(content.get("response"))
+        elif content.get("error") is not None:
+            await message.channel.send("Error:\n" + content.get("error"))
+        else:
+            await message.channel.send("Something went wrong. Please try again later.")
+    except Exception as e:
+        await message.channel.send("Error:\n" + str(e))
 
 
 @tree.command(name="image", description="Generate image with DALL·E 2a")
@@ -72,21 +76,27 @@ async def image(interaction: discord.Interaction, prompt: str):
         "Content-Type": "application/json",
         "Authorization": f"Bearer {openai_api_key}",
     }
-    response = requests.post(api_url + "/dalle2", data=data, headers=headers)
-    content = response.content.decode("utf-8")
-    content = json.loads(content)
 
-    if content.get("response") is not None:
-        image_url = content.get("response")
-        image_data = requests.get(image_url).content
-        image_file = BytesIO(image_data)
-        picture = discord.File(image_file, filename="image.png")
+    try:
+        response = requests.post(api_url + "/dalle2", data=data, headers=headers)
+        content = response.content.decode("utf-8")
+        content = json.loads(content)
 
-        await interaction.followup.send(file=picture)
-    elif content.get("error") is not None:
-        await interaction.followup.send("Error:\n" + content.get("error"))
-    else:
-        await interaction.followup.send("Something went wrong. Please try again later.")
+        if content.get("response") is not None:
+            image_url = content.get("response")
+            image_data = requests.get(image_url).content
+            image_file = BytesIO(image_data)
+            picture = discord.File(image_file, filename="image.png")
+
+            await interaction.followup.send(file=picture)
+        elif content.get("error") is not None:
+            await interaction.followup.send("Error:\n" + content.get("error"))
+        else:
+            await interaction.followup.send(
+                "Something went wrong. Please try again later."
+            )
+    except Exception as e:
+        await interaction.followup.send("Error:\n" + str(e))
 
 
 @client.event

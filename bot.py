@@ -30,7 +30,10 @@ async def handle_chatgpt(message):
     if (
         message.author.bot
         or not message.type == discord.MessageType.default
-        or not message.content.startswith("!chat")
+        or (
+            not message.channel.name == "chatgpt"
+            and not message.content.startswith("!chat")
+        )
     ):
         return
 
@@ -43,6 +46,7 @@ async def handle_chatgpt(message):
             "user_id": message.author.id,
             "chatgpt_bot_id": discord_bot_id,
             "messages": messages,
+            "channel": message.channel.name,
         }
     )
 

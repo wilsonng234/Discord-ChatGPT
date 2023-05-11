@@ -33,7 +33,7 @@ OPENAI_API_KEY={your openai api key}
 2. sudo microk8s enable community && sudo microk8s enable openfaas
 
 # Get faas-cli
-3. curl -SLsf https://cli.openfaas.com | sh
+3. curl -SLsf https://cli.openfaas.com | sudo sh
 
 # Forward the gateway to EC2 instance
 4. sudo microk8s kubectl rollout status -n openfaas deploy/gateway
@@ -73,13 +73,13 @@ Follow this [tutorial](https://docs.openfaas.com/deployment/kubernetes/):
 0. Enable kubernetes in Docker Desktop
 
 # Get arkade
-1. curl -SLsf https://get.arkade.dev/ | sh
+1. curl -SLsf https://get.arkade.dev/ | sh      # sudo sh if using linux
 
 # Install OpenFaas
 2. arkade install openfaas
 
 # Get faas-cli
-3. curl -SLsf https://cli.openfaas.com | sh
+3. curl -SLsf https://cli.openfaas.com | sh     # sudo sh if using linux
 
 # Forward the gateway to your machine
 4. kubectl rollout status -n openfaas deploy/gateway

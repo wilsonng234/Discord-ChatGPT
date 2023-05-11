@@ -6,7 +6,6 @@ discord_bot_id = config["DISCORD_BOT_ID"]
 discord_bot_token = config["DISCORD_BOT_TOKEN"]
 openai_api_key = config["OPENAI_API_KEY"]
 
-import openai
 import json
 import discord
 import requests
